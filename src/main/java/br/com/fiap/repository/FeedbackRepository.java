@@ -15,7 +15,7 @@ public class FeedbackRepository {
 
     // Create
     public void salvarFeedback(Feedback feedback) {
-        String sql = "INSERT INTO SPRINT_FEEDBACKS (NOME, EMAIL, SUGESTAO, NIVEL_SATISFACAO) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO FEEDBACKS (NOME, EMAIL, SUGESTAO, NIVEL_SATISFACAO) VALUES (?, ?, ?, ?)";
         try (Connection conn = factory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -33,15 +33,15 @@ public class FeedbackRepository {
     // Read
     public List<Feedback> listarTodos() {
         List<Feedback> lista = new ArrayList<>();
-        String sql = "SELECT ID_FEEDBACK, NOME, EMAIL, NIVEL_SATISFACAO, SUGESTAO, DATA_ENVIO " +
-                "FROM SPRINT_FEEDBACKS ORDER BY DATA_ENVIO DESC";
+        String sql = "SELECT FEEDBACK_ID, NOME, EMAIL, NIVEL_SATISFACAO, SUGESTAO, DATA_ENVIO " +
+                "FROM FEEDBACKS ORDER BY DATA_ENVIO DESC";
         try (Connection conn = factory.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
                 Feedback f = new Feedback(
-                        rs.getLong("ID_FEEDBACK"),
+                        rs.getLong("FEEDBACK_ID"),
                         rs.getString("NOME"),
                         rs.getString("EMAIL"),
                         rs.getInt("NIVEL_SATISFACAO"),
