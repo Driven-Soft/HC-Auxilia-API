@@ -76,7 +76,9 @@ public class ExameRepository {
 
                 Timestamp ts = rs.getTimestamp("data_hora");
                 if (ts != null) {
-                    ev.setDataHoraExame(ts.toLocalDateTime().toString());
+                    java.time.LocalDateTime ldt = ts.toLocalDateTime();
+                    java.time.format.DateTimeFormatter fmt = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy — HH:mm");
+                    ev.setDataHoraExame(ldt.format(fmt));
                 }
 
                 ev.setNomeDoutor(rs.getString("medico_nome"));
@@ -119,7 +121,9 @@ public class ExameRepository {
                     ev.setNomeExame(rs.getString("nome_exame"));
                     Timestamp ts = rs.getTimestamp("data_hora");
                     if (ts != null) {
-                        ev.setDataHoraExame(ts.toLocalDateTime().toString());
+                        java.time.LocalDateTime ldt = ts.toLocalDateTime();
+                        java.time.format.DateTimeFormatter fmt = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                        ev.setDataHoraExame(ldt.format(fmt));
                     }
                     ev.setNomeDoutor(rs.getString("medico_nome"));
                     ev.setRua(rs.getString("rua"));
