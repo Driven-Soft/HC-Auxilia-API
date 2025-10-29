@@ -1,5 +1,8 @@
 package br.com.fiap.view;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
 public class ExameView {
     private Long idExame;
     private String nomeExame;
