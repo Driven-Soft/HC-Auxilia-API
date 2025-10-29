@@ -3,33 +3,34 @@ package br.com.fiap.model;
 import java.time.LocalDateTime;
 
 public class Exame {
-    private long idExame;
+    private Long idExame;
     private String nomeExame;
     private LocalDateTime dataHoraExame;
-    private String nomeDoutor;
-    private String logradouro;
-    private String numero;
-    private String estado;
+    private String resultado;
     private String status;
 
-    public Exame () {}
+    private Paciente paciente;
+    private Medico medico;
+    private Endereco endereco;
 
-    public Exame(long idExame, String nomeExame, LocalDateTime dataHoraExame, String nomeDoutor, String logradouro, String numero, String estado, String status) {
+    public Exame() {};
+
+    public Exame(Long idExame, String nomeExame, LocalDateTime dataHoraExame, String resultado, String status, Paciente paciente, Medico medico, Endereco endereco) {
         this.idExame = idExame;
         this.nomeExame = nomeExame;
         this.dataHoraExame = dataHoraExame;
-        this.nomeDoutor = nomeDoutor;
-        this.logradouro = logradouro;
-        this.numero = numero;
-        this.estado = estado;
+        this.resultado = resultado;
         this.status = status;
+        this.paciente = paciente;
+        this.medico = medico;
+        this.endereco = endereco;
     }
 
-    public long getIdExame() {
+    public Long getIdExame() {
         return idExame;
     }
 
-    public void setIdExame(long idExame) {
+    public void setIdExame(Long idExame) {
         this.idExame = idExame;
     }
 
@@ -49,36 +50,12 @@ public class Exame {
         this.dataHoraExame = dataHoraExame;
     }
 
-    public String getNomeDoutor() {
-        return nomeDoutor;
+    public String getResultado() {
+        return resultado;
     }
 
-    public void setNomeDoutor(String nomeDoutor) {
-        this.nomeDoutor = nomeDoutor;
-    }
-
-    public String getLogradouro() {
-        return logradouro;
-    }
-
-    public void setLogradouro(String logradouro) {
-        this.logradouro = logradouro;
-    }
-
-    public String getNumero() {
-        return numero;
-    }
-
-    public void setNumero(String numero) {
-        this.numero = numero;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
+    public void setResultado(String resultado) {
+        this.resultado = resultado;
     }
 
     public String getStatus() {
@@ -89,17 +66,41 @@ public class Exame {
         this.status = status;
     }
 
+    public Paciente getPaciente() {
+        return paciente;
+    }
+
+    public void setPaciente(Paciente paciente) {
+        this.paciente = paciente;
+    }
+
+    public Medico getMedico() {
+        return medico;
+    }
+
+    public void setMedico(Medico medico) {
+        this.medico = medico;
+    }
+
+    public Endereco getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(Endereco endereco) {
+        this.endereco = endereco;
+    }
+
     @Override
     public String toString() {
         return "Exame{" +
                 "idExame=" + idExame +
                 ", nomeExame='" + nomeExame + '\'' +
                 ", dataHoraExame=" + dataHoraExame +
-                ", nomeDoutor='" + nomeDoutor + '\'' +
-                ", logradouro='" + logradouro + '\'' +
-                ", numero='" + numero + '\'' +
-                ", estado='" + estado + '\'' +
+                ", resultado='" + resultado + '\'' +
                 ", status='" + status + '\'' +
+                ", paciente=" + paciente +
+                ", medico=" + medico +
+                ", endereco=" + endereco +
                 '}';
     }
 }

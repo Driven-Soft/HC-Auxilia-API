@@ -57,4 +57,46 @@ public class FeedbackRepository {
 
         return lista;
     }
+
+    // Update
+    public void atualizarFeedback(Feedback feedback) {
+        String sql = "UPDATE FEEDBACKS " +
+                "SET NOME = ?, EMAIL = ?, SUGESTAO = ?, NIVEL_SATISFACAO = ? " +
+                "WHERE FEEDBACK_ID = ?";
+        try (Connection conn = factory.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, feedback.getNome());
+            ps.setString(2, feedback.getEmail());
+            ps.setString(3, feedback.getSugestao());
+            ps.setInt(4, feedback.getNivelSatisfacao());
+            ps.setLong(5, feedback.getIdFeedback());
+
+            int linhasAfetadas = ps.executeUpdate();
+            if (linhasAfetadas == 0) {
+                throw new RuntimeException("Nenhum feedback encontrado com o ID informado.");
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao atualizar feedback", e);
+        }
+    }
+
+    // Delete
+    public void deletarFeedback(long feedbackId) {
+        String sql = "DELETE FROM FEEDBACKS WHERE FEEDBACK_ID = ?";
+        try (Connection conn = factory.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setLong(1, feedbackId);
+
+            int linhasAfetadas = ps.executeUpdate();
+            if (linhasAfetadas == 0) {
+                throw new RuntimeException("Nenhum feedback encontrado com o ID informado.");
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao deletar feedback", e);
+        }
+    }
 }

@@ -3,7 +3,7 @@ package br.com.fiap.model;
 import java.util.Date;
 
 public class Feedback {
-    private long idFeedback;
+    private Long idFeedback;
     private String nome;
     private String email;
     private int nivelSatisfacao;
@@ -12,7 +12,7 @@ public class Feedback {
 
     public Feedback() {}
 
-    public Feedback(long idFeedback, String nome, String email, int nivelSatisfacao, String sugestao, Date dataEnvio) {
+    public Feedback(Long idFeedback, String nome, String email, int nivelSatisfacao, String sugestao, Date dataEnvio) {
         this.idFeedback = idFeedback;
         this.nome = nome;
         this.email = email;
@@ -21,11 +21,11 @@ public class Feedback {
         this.dataEnvio = dataEnvio;
     }
 
-    public long getIdFeedback() {
+    public Long getIdFeedback() {
         return idFeedback;
     }
 
-    public void setIdFeedback(long idFeedback) {
+    public void setIdFeedback(Long idFeedback) {
         this.idFeedback = idFeedback;
     }
 
