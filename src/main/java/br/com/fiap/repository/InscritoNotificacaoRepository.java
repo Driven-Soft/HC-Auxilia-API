@@ -3,7 +3,6 @@ package br.com.fiap.repository;
 import br.com.fiap.model.InscritoNotificacao;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 

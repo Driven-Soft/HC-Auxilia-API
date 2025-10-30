@@ -202,4 +202,22 @@ public class ExameRepository {
             throw new RuntimeException("Erro ao deletar exame", e);
         }
     }
+
+    public void atualizarStatus(long id, String status) {
+        String sql = "UPDATE EXAMES SET STATUS = ? WHERE EXAME_ID = ?";
+        try (Connection conn = factory.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, status);
+            ps.setLong(2, id);
+
+            int rows = ps.executeUpdate();
+            if (rows == 0) {
+                throw new RuntimeException("Nenhum exame encontrado com o ID informado.");
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao atualizar status do exame", e);
+        }
+    }
 }

@@ -4,7 +4,6 @@ import br.com.fiap.model.Paciente;
 import br.com.fiap.model.Endereco;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 

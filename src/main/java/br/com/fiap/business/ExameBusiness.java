@@ -11,7 +11,6 @@ public class ExameBusiness {
     private ExameRepository repository = new ExameRepository();
 
     public void salvarExame(Exame exame) {
-        // validações mínimas podem ser adicionadas aqui
         repository.salvarExame(exame);
     }
 
@@ -31,5 +30,11 @@ public class ExameBusiness {
     public void deletarExame(Long id) {
         if (id == null) return;
         repository.deletarExame(id);
+    }
+
+    // Marca um exame como finalizado (status = 'F')
+    public void finalizarExame(Long id) {
+        if (id == null) return;
+        repository.atualizarStatus(id, "F");
     }
 }

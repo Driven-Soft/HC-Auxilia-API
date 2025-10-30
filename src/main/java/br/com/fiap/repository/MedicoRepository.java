@@ -5,7 +5,6 @@ import br.com.fiap.model.Endereco;
 import br.com.fiap.model.Especialidade;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 

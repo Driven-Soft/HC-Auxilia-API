@@ -91,6 +91,19 @@ public class ExameResource {
         }
     }
 
+    @PUT
+    @Path("/{id}/finalizar")
+    public Response finalizarExame(@PathParam("id") Long id) {
+        try {
+            service.finalizarExame(id);
+            return Response.noContent().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("Erro ao finalizar exame: " + e.getMessage()).build();
+        }
+    }
+
     @OPTIONS
     public Response options() {
         return Response.noContent().build();
