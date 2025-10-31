@@ -2,10 +2,7 @@ package br.com.fiap.repository;
 
 import br.com.fiap.model.Feedback;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,20 +11,26 @@ public class FeedbackRepository {
     private ConnectionFactory factory = new ConnectionFactory();
 
     // Create
-    public void salvarFeedback(Feedback feedback) {
-        String sql = "INSERT INTO FEEDBACKS (NOME, EMAIL, SUGESTAO, NIVEL_SATISFACAO) VALUES (?, ?, ?, ?)";
+    public Long salvarFeedback(Feedback feedback) {
+        String sql = "INSERT INTO FEEDBACK (NOME, SUGESTAO, NIVEL_SATISFACAO) VALUES (?, ?, ?)";
+
         try (Connection conn = factory.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, feedback.getNome());
-            ps.setString(2, feedback.getEmail());
-            ps.setString(3, feedback.getSugestao());
-            ps.setInt(4, feedback.getNivelSatisfacao());
+            ps.setString(2, feedback.getSugestao());
+            ps.setInt(3, feedback.getNivelSatisfacao());
             ps.executeUpdate();
 
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao salvar feedback", e);
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                return rs.getLong(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+        return null;
     }
 
     // Read

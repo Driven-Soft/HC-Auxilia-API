@@ -25,17 +25,17 @@ public class FeedbackBusiness {
     }
 
     // Registrar feedback apenas se válido
-    public boolean registrarFeedback(Feedback feedback) {
+    public Long registrarFeedback(Feedback feedback) {
         if (validarNome(feedback.getNome()) &&
                 validarSugestao(feedback.getSugestao()) &&
                 validarNivelSatisfacao(feedback.getNivelSatisfacao())) {
 
-            repository.salvarFeedback(feedback);
-            return true;
+            Long idGerado = repository.salvarFeedback(feedback); // deve retornar ID
+            return idGerado;
         }
 
         System.out.println("Erro: Feedback inválido!");
-        return false;
+        return null;
     }
 
     public List<Feedback> listarTodos() {
