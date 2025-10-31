@@ -41,4 +41,9 @@ public class FeedbackBusiness {
     public List<Feedback> listarTodos() {
         return repository.listarTodos();
     }
+
+    public void deletarFeedback(Long id) {
+        if (id == null) return;
+        repository.deletarFeedback(id);
+    }
 }
