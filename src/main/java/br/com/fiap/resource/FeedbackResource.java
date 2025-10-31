@@ -14,29 +14,21 @@ public class FeedbackResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public Response salvarFeedback(Feedback feedback) {
         try {
-            Long idGerado = service.registrarFeedback(feedback);
-
-            if (idGerado != null && idGerado > 0) {
-                return Response.status(Response.Status.CREATED)
-                        .entity("{\"idFeedback\": " + idGerado + "}")
-                        .build();
+            boolean ok = service.registrarFeedback(feedback);
+            if (ok) {
+                return Response.status(Response.Status.CREATED).build();
             } else {
                 return Response.status(Response.Status.BAD_REQUEST)
-                        .entity("Dados do feedback inválidos")
-                        .build();
+                        .entity("Dados do feedback inválidos").build();
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Erro ao salvar feedback: " + e.getMessage())
-                    .build();
+                    .entity("Erro ao salvar feedback: " + e.getMessage()).build();
         }
     }
-
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
