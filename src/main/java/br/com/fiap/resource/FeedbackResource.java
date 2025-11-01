@@ -45,16 +45,14 @@ public class FeedbackResource {
 
     @OPTIONS
     public Response options() {
-        // Allow CORS preflight to succeed. Quarkus' CORS config should handle headers,
-        // this returns a simple 204/No Content so the browser preflight won't get a 405.
         return Response.noContent().build();
     }
 
     @DELETE
-    @Path("/{id}")
-    public Response deletarFeedback(@PathParam("id") Long id) {
+    @Path("/{codigoHash}")
+    public Response deletarFeedback(@PathParam("codigoHash") String codigoHash) {
         try {
-            service.deletarFeedback(id);
+            service.deletarFeedback(codigoHash);
             return Response.noContent().build();
         } catch (Exception e) {
             e.printStackTrace();

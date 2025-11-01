@@ -42,6 +42,13 @@ public class FeedbackBusiness {
         return repository.listarTodos();
     }
 
+    // Deletar por codigoHash (preferido)
+    public void deletarFeedback(String codigoHash) {
+        if (codigoHash == null || codigoHash.trim().isEmpty()) return;
+        repository.deletarFeedbackPorCodigoHash(codigoHash);
+    }
+
+    // Mantém o método por id caso alguma parte do sistema ainda use-o
     public void deletarFeedback(Long id) {
         if (id == null) return;
         repository.deletarFeedback(id);

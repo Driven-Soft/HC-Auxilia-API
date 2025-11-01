@@ -101,4 +101,22 @@ public class FeedbackRepository {
             throw new RuntimeException("Erro ao deletar feedback", e);
         }
     }
+
+    // Delete by codigoHash
+    public void deletarFeedbackPorCodigoHash(String codigoHash) {
+        String sql = "DELETE FROM FEEDBACKS WHERE CODIGO_HASH = ?";
+        try (Connection conn = factory.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, codigoHash);
+
+            int linhasAfetadas = ps.executeUpdate();
+            if (linhasAfetadas == 0) {
+                throw new RuntimeException("Nenhum feedback encontrado com o codigoHash informado.");
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao deletar feedback", e);
+        }
+    }
 }
