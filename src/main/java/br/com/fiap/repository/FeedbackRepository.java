@@ -15,7 +15,7 @@ public class FeedbackRepository {
 
     // Create
     public void salvarFeedback(Feedback feedback) {
-        String sql = "INSERT INTO FEEDBACKS (NOME, EMAIL, SUGESTAO, NIVEL_SATISFACAO) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO FEEDBACKS (NOME, EMAIL, SUGESTAO, NIVEL_SATISFACAO, CODIGO_HASH) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = factory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -23,6 +23,7 @@ public class FeedbackRepository {
             ps.setString(2, feedback.getEmail());
             ps.setString(3, feedback.getSugestao());
             ps.setInt(4, feedback.getNivelSatisfacao());
+            ps.setString(5, feedback.getCodigoHash());
             ps.executeUpdate();
 
         } catch (SQLException e) {
@@ -33,8 +34,7 @@ public class FeedbackRepository {
     // Read
     public List<Feedback> listarTodos() {
         List<Feedback> lista = new ArrayList<>();
-        String sql = "SELECT FEEDBACK_ID, NOME, EMAIL, NIVEL_SATISFACAO, SUGESTAO, DATA_ENVIO " +
-                "FROM FEEDBACKS ORDER BY DATA_ENVIO DESC";
+        String sql = "SELECT FEEDBACK_ID, NOME, EMAIL, NIVEL_SATISFACAO, SUGESTAO, DATA_ENVIO, CODIGO_HASH FROM FEEDBACKS ORDER BY DATA_ENVIO DESC";
         try (Connection conn = factory.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
@@ -46,7 +46,8 @@ public class FeedbackRepository {
                         rs.getString("EMAIL"),
                         rs.getInt("NIVEL_SATISFACAO"),
                         rs.getString("SUGESTAO"),
-                        rs.getDate("DATA_ENVIO")
+                        rs.getDate("DATA_ENVIO"),
+                        rs.getString("CODIGO_HASH")
                 );
                 lista.add(f);
             }
@@ -61,7 +62,7 @@ public class FeedbackRepository {
     // Update
     public void atualizarFeedback(Feedback feedback) {
         String sql = "UPDATE FEEDBACKS " +
-                "SET NOME = ?, EMAIL = ?, SUGESTAO = ?, NIVEL_SATISFACAO = ? " +
+                "SET NOME = ?, EMAIL = ?, SUGESTAO = ?, NIVEL_SATISFACAO = ?, CODIGO_HASH = ?" +
                 "WHERE FEEDBACK_ID = ?";
         try (Connection conn = factory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -70,7 +71,8 @@ public class FeedbackRepository {
             ps.setString(2, feedback.getEmail());
             ps.setString(3, feedback.getSugestao());
             ps.setInt(4, feedback.getNivelSatisfacao());
-            ps.setLong(5, feedback.getIdFeedback());
+            ps.setString(5, feedback.getCodigoHash());
+            ps.setLong(6, feedback.getIdFeedback());
 
             int linhasAfetadas = ps.executeUpdate();
             if (linhasAfetadas == 0) {
