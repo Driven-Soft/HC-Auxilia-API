@@ -10,37 +10,38 @@ public class InscritoNotificacaoRepository {
 
     private ConnectionFactory factory = new ConnectionFactory();
 
+    // --- Salvar ---
     public void salvarInscrito(InscritoNotificacao inscrito) {
-        String sql = "INSERT INTO INSCRICOES_NOTIFICACOES (NOME, TELEFONE, RECEBE_SMS, RECEBE_WHATSAPP, DATA_INSCRICAO, STATUS) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO INSCRICOES_NOTIFICACOES (NOME, TELEFONE, RECEBE_SMS, RECEBE_WHATSAPP) " +
+                "VALUES (?, ?, ?, ?)";
 
         try (Connection conn = factory.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql, new String[]{"INSCRICAO_ID"})) {
 
             ps.setString(1, inscrito.getNome());
             ps.setString(2, inscrito.getTelefone());
             ps.setString(3, inscrito.getRecebeSms());
             ps.setString(4, inscrito.getRecebeWhatsapp());
 
-            if (inscrito.getDataInscricao() != null) {
-                ps.setDate(5, Date.valueOf(inscrito.getDataInscricao()));
-            } else {
-                ps.setDate(5, null);
-            }
-
-            ps.setString(6, inscrito.getStatus());
-
             ps.executeUpdate();
+
+            // Recupera o ID gerado automaticamente
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    inscrito.setIdInscritoNotificacao(rs.getLong(1));
+                }
+            }
 
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao salvar inscrito", e);
         }
     }
 
+    // --- Listar todos ---
     public List<InscritoNotificacao> listarTodos() {
         List<InscritoNotificacao> lista = new ArrayList<>();
 
-        String sql = "SELECT INSCRITO_NOTIFICACAO_ID, NOME, TELEFONE, RECEBE_SMS, RECEBE_WHATSAPP, DATA_INSCRICAO, STATUS " +
+        String sql = "SELECT INSCRICAO_ID, NOME, TELEFONE, RECEBE_SMS, RECEBE_WHATSAPP, DATA_INSCRICAO, STATUS " +
                 "FROM INSCRICOES_NOTIFICACOES";
 
         try (Connection conn = factory.getConnection();
@@ -49,7 +50,7 @@ public class InscritoNotificacaoRepository {
 
             while (rs.next()) {
                 InscritoNotificacao i = new InscritoNotificacao();
-                i.setIdInscritoNotificacao(rs.getLong("inscrito_notificacao_id"));
+                i.setIdInscritoNotificacao(rs.getLong("inscricao_id"));
                 i.setNome(rs.getString("nome"));
                 i.setTelefone(rs.getString("telefone"));
                 i.setRecebeSms(rs.getString("recebe_sms"));
@@ -72,9 +73,10 @@ public class InscritoNotificacaoRepository {
         return lista;
     }
 
+    // --- Buscar por ID ---
     public InscritoNotificacao buscarPorId(Long id) {
-        String sql = "SELECT INSCRITO_NOTIFICACAO_ID, NOME, TELEFONE, RECEBE_SMS, RECEBE_WHATSAPP, DATA_INSCRICAO, STATUS " +
-                "FROM INSCRICOES_NOTIFICACOES WHERE INSCRITO_NOTIFICACAO_ID = ?";
+        String sql = "SELECT INSCRICAO_ID, NOME, TELEFONE, RECEBE_SMS, RECEBE_WHATSAPP, DATA_INSCRICAO, STATUS " +
+                "FROM INSCRICOES_NOTIFICACOES WHERE INSCRICAO_ID = ?";
 
         try (Connection conn = factory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -84,7 +86,7 @@ public class InscritoNotificacaoRepository {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     InscritoNotificacao i = new InscritoNotificacao();
-                    i.setIdInscritoNotificacao(rs.getLong("inscrito_notificacao_id"));
+                    i.setIdInscritoNotificacao(rs.getLong("inscricao_id"));
                     i.setNome(rs.getString("nome"));
                     i.setTelefone(rs.getString("telefone"));
                     i.setRecebeSms(rs.getString("recebe_sms"));
@@ -107,9 +109,10 @@ public class InscritoNotificacaoRepository {
         return null;
     }
 
+    // --- Atualizar ---
     public void atualizarInscrito(InscritoNotificacao inscrito) {
-        String sql = "UPDATE INSCRICOES_NOTIFICACOES SET NOME = ?, TELEFONE = ?, RECEBE_SMS = ?, RECEBE_WHATSAPP = ?, DATA_INSCRICAO = ?, STATUS = ? " +
-                "WHERE INSCRITO_NOTIFICACAO_ID = ?";
+        String sql = "UPDATE INSCRICOES_NOTIFICACOES SET NOME = ?, TELEFONE = ?, RECEBE_SMS = ?, RECEBE_WHATSAPP = ?, STATUS = ? " +
+                "WHERE INSCRICAO_ID = ?";
 
         try (Connection conn = factory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -118,15 +121,8 @@ public class InscritoNotificacaoRepository {
             ps.setString(2, inscrito.getTelefone());
             ps.setString(3, inscrito.getRecebeSms());
             ps.setString(4, inscrito.getRecebeWhatsapp());
-
-            if (inscrito.getDataInscricao() != null) {
-                ps.setDate(5, Date.valueOf(inscrito.getDataInscricao()));
-            } else {
-                ps.setDate(5, null);
-            }
-
-            ps.setString(6, inscrito.getStatus());
-            ps.setLong(7, inscrito.getIdInscritoNotificacao());
+            ps.setString(5, inscrito.getStatus());
+            ps.setLong(6, inscrito.getIdInscritoNotificacao());
 
             int rows = ps.executeUpdate();
             if (rows == 0) {
@@ -138,8 +134,9 @@ public class InscritoNotificacaoRepository {
         }
     }
 
+    // --- Deletar ---
     public void deletarInscrito(Long id) {
-        String sql = "DELETE FROM INSCRICOES_NOTIFICACOES WHERE INSCRITO_NOTIFICACAO_ID = ?";
+        String sql = "DELETE FROM INSCRICOES_NOTIFICACOES WHERE INSCRICAO_ID = ?";
 
         try (Connection conn = factory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {

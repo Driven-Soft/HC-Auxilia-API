@@ -78,4 +78,17 @@ public class InscritoNotificacao {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "InscritoNotificacao{" +
+                "idInscritoNotificacao=" + idInscritoNotificacao +
+                ", nome='" + nome + '\'' +
+                ", telefone='" + telefone + '\'' +
+                ", recebeSms='" + recebeSms + '\'' +
+                ", recebeWhatsapp='" + recebeWhatsapp + '\'' +
+                ", dataInscricao=" + dataInscricao +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }
