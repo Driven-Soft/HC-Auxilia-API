@@ -61,21 +61,28 @@ public class InscritoNotificacaoBusiness {
         }
 
         // --- Validar recebeSms e recebeWhatsapp ---
-        String sms = inscrito.getRecebeSms() != null ? inscrito.getRecebeSms().toUpperCase() : "N";
-        String whatsapp = inscrito.getRecebeWhatsapp() != null ? inscrito.getRecebeWhatsapp().toUpperCase() : "N";
-
-        if ((!sms.equals("S") && !sms.equals("N")) ||
-                (!whatsapp.equals("S") && !whatsapp.equals("N"))) {
-            throw new IllegalArgumentException("Valores inválidos. recebeSms e recebeWhatsapp devem ser 'S' ou 'N'.");
-        }
+        // Aceita diversos formatos vindos do front (ex: "S"/"N", "V"/"F", true/false, "SIM"/"NAO")
+        String sms = normalizeToSOrN(inscrito.getRecebeSms());
+        String whatsapp = normalizeToSOrN(inscrito.getRecebeWhatsapp());
 
         // Pelo menos um dos dois precisa ser S
         if (sms.equals("N") && whatsapp.equals("N")) {
             throw new IllegalArgumentException("É necessário aceitar pelo menos um canal de notificação (SMS ou WhatsApp).");
         }
 
-        // Atualiza o objeto normalizando "s" para "S"
+        // Atualiza o objeto normalizando para 'S' ou 'N'
         inscrito.setRecebeSms(sms);
         inscrito.setRecebeWhatsapp(whatsapp);
+    }
+
+    // Normaliza vários formatos para 'S' (sim) ou 'N' (não)
+    private String normalizeToSOrN(String value) {
+        if (value == null) return "N";
+        String v = value.trim().toUpperCase();
+        // aceitar 'V'/'F' (ex.: 'V' = verdadeiro), 'S'/'N', boolean-like strings
+        if (v.equals("S") || v.equals("V") || v.equals("TRUE") || v.equals("T") || v.equals("1") || v.equals("SIM") || v.equals("YES") ) {
+            return "S";
+        }
+        return "N";
     }
 }

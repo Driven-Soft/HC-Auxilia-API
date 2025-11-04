@@ -1,12 +1,15 @@
 package br.com.fiap.model;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import java.time.LocalDate;
 
 public class InscritoNotificacao {
     private Long idInscritoNotificacao;
     private String nome;
     private String telefone;
+    @JsonAlias({"sms", "recebeSms"})
     private String recebeSms;       // 'S' ou 'N'
+    @JsonAlias({"whatsapp", "recebeWhatsapp"})
     private String recebeWhatsapp;  // 'S' ou 'N'
     private LocalDate dataInscricao;
     private String status;          // 'A' ou 'I
