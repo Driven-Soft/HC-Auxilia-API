@@ -1,84 +1,113 @@
-# 🏥 HC Auxilia -- Plataforma de Redução de Absenteísmo
+# 🔥 HC Auxilia - API (Driven Soft)
 
-O **HC Auxilia** é uma plataforma desenvolvida para o Hospital das
-Clínicas com o objetivo principal de **reduzir faltas em consultas e
-exames médicos**, oferecendo comunicação digital eficiente entre
-hospital e pacientes.\
-A solução ajuda o hospital a otimizar agendas, organizar atendimentos e
-evitar desperdício de recursos.
+Bem-vindo(a) à solução back-end do projeto **HC Auxilia**, desenvolvido pela equipe **Driven Soft**!
+Esta API foi criada para apoiar o sistema de inclusão digital na saúde, ajudando pacientes e cuidadores a se cadastrarem, enviarem feedback e receberem notificações — contribuindo para a **redução da taxa de absenteísmo em teleconsultas**.
 
-------------------------------------------------------------------------
+---
 
-## ✅ Objetivo do Projeto
+## 🎯 Desafio
 
--   Diminuir o número de pacientes que faltam
--   Garantir melhor comunicação entre hospital e pacientes
--   Registrar contatos e preferências de alerta
--   Permitir listagens, atualizações e relatórios
--   Enviar notificações pré-consulta
+Criar uma solução capaz de melhorar a experiência do paciente em plataforma de saúde digital, **sem alterar** o sistema oficial do hospital.
 
-------------------------------------------------------------------------
+✅ Resultados esperados:
 
-## 🧩 Componentes do Sistema
+- Facilitar comunicação e suporte
+- Permitir envio de feedback
+- Enviar lembretes e notificações
+- **Diminuir a taxa de absenteísmo em consultas remotas**
 
-### ✅ 1. Front-End (React)
+---
 
-Interface amigável e responsiva para: - Cadastro de nome, telefone e
-preferências de notificação - Comunicação com a API via HTTP - Feedback
-visual para paciente e equipe
+## 📌 Objetivo
 
-------------------------------------------------------------------------
+A **HC Auxilia API**, desenvolvida com **Quarkus + Java + Maven + Oracle JDBC**, fornece uma camada intermediária simples e eficiente para registrar exames, coletar feedback e gerenciar inscritos para notificações.
 
-### ✅ 2. API (Java + JDBC)
+Tudo validado e armazenado no banco Oracle, garantindo dados consistentes para futuramente gerar acompanhamento e relatórios.
 
-Responsável por regras e persistência: - Recebe requisições do
-front-end - Valida dados - Salva e consulta o banco Oracle - Exposição
-de endpoints REST
+---
 
-Método   Rota              Função
-  -------- ----------------- -----------------------
-POST     /inscritos        Cadastrar um inscrito
-GET      /inscritos        Listar todos
-GET      /inscritos/{id}   Buscar por ID
-PUT      /inscritos/{id}   Atualizar
-DELETE   /inscritos/{id}   Inativar
+## 🗂 Estrutura Principal
 
-------------------------------------------------------------------------
-
-## ✅ Regras de Validação (resumo)
-
--   Nome → mínimo 3 caracteres e sem números
--   Telefone → só dígitos e com tamanho mínimo
--   `recebeSms` e `recebeWhatsapp` → somente "S" ou "N"
--   Pelo menos uma opção deve ser "S"
-
-------------------------------------------------------------------------
-
-## 📦 Como Rodar
-
-### 1️⃣ Banco de Dados
-
--   Executar o script `inscricoes_notificacoes.sql`
-
-### 2️⃣ Backend
-
--   Configurar `ConnectionFactory` com usuário, senha e service
--   Rodar o projeto
-
-### 3️⃣ Front-End
-
-``` bash
-npm install
-npm start
 ```
 
-Acessar: `http://localhost:8080`
+src/main/java/br/com/fiap/
+├── resource/       # Endpoints REST
+│   ├── ExameResource.java
+│   ├── FeedbackResource.java
+│   └── InscritoNotificacaoResource.java
+│
+├── business/       # Regras de negócio e validações
+├── repository/     # Persistência Oracle (JDBC + SQL)
+└── model/          # Entidades e DTOs
 
-------------------------------------------------------------------------
+```
 
-## ✅ Exemplo de POST (Cadastro)
+---
 
-``` json
+## 🌐 Recursos da API
+
+Todos os endpoints utilizam **RESTEasy (JAX-RS)** com respostas em **JSON (Jackson)**.
+Cada controller chama sua camada de validação (`business`) antes de salvar no banco.
+
+### ✅ `ExameResource.java`
+
+> Gerencia o registro e consulta de exames.
+
+📌 Funções principais:
+- `POST /exame` → cadastra um novo exame  
+- `GET /exame` → lista todos os exames  
+- `GET /exame/{id}` → consulta por ID  
+
+✔ Validações aplicadas:
+- Nome do exame é obrigatório
+- ID/CPF do paciente deve ser válido
+- Data não pode ser nula
+- Impede envio de campos vazios
+
+Se os dados estiverem corretos → grava no Oracle via JDBC  
+Se estiver incorreto → retorna `400` com mensagem JSON
+
+---
+
+### ✅ `FeedbackResource.java`
+
+> Responsável por registrar e listar feedbacks dos usuários.
+
+📌 Funções:
+- `POST /feedback` → grava feedback
+- `GET /feedback` → lista todos
+
+✔ Validações:
+- Nome deve ter tamanho mínimo
+- Sugestão não pode ser vazia
+- Nível de satisfação deve ser numérico e dentro de faixa válida
+
+Exemplo de retorno de sucesso:
+```json
+{ 
+  "mensagem": "Feedback registrado com sucesso" 
+}
+```
+
+---
+
+### ✅ `InscritoNotificacaoResource.java`
+
+> Cadastra usuários para receber notificações e lembretes.
+
+📌 Funções:
+
+* `POST /inscrito` → inscreve usuário
+* `GET /inscrito` → lista usuários cadastrados
+
+✔ Validações:
+
+* Nome obrigatório
+* Telefone ou email precisa ser válido
+* Impede cadastros incompletos
+
+Exemplo de POST de sucesso:
+```json
 {
   "nome": "Maria Andrade",
   "telefone": "11999998888",
@@ -87,29 +116,78 @@ Acessar: `http://localhost:8080`
 }
 ```
 
-Resposta esperada:
+---
 
-``` json
-{
-  "mensagem": "Inscrito cadastrado com sucesso",
-  "idGerado": 15
-}
+## 🧠 Camada Business
+
+Antes de qualquer gravação no banco:
+
+✔ valida campos obrigatórios
+✔ evita dados inconsistentes
+✔ retorna erro claro para o cliente
+✔ só chama o `repository` se estiver válido
+
+Fluxo simplificado:
+
+1. Resource recebe JSON
+2. Business valida
+3. Repository executa SQL (JDBC)
+4. Resposta JSON é retornada
+
+---
+
+## 🚀 Como rodar localmente
+
+```bash
+git clone https://github.com/Driven-Soft/HC-Auxilia-API
+cd HC-Auxilia-API
+mvn quarkus:dev
 ```
 
-------------------------------------------------------------------------
+A API sobe em:
+
+```
+http://localhost:8080
+```
+
+Configure seu `application.properties`:
+
+```
+quarkus.datasource.username=
+quarkus.datasource.password=
+quarkus.datasource.jdbc.url=
+```
+
+---
+
+## 🛠 Tecnologias Utilizadas
+
+| Tecnologia             | Função                                |
+| ---------------------- | ------------------------------------- |
+| **Quarkus**            | Framework rápido para APIs REST       |
+| **Java 17**            | Linguagem principal                   |
+| **Maven**              | Gerenciamento de dependências         |
+| **RESTEasy + Jackson** | JSON + controle de requests/responses |
+| **Oracle JDBC**        | Persistência no banco Oracle          |
+
+---
 
 ## 👥 Equipe
 
-- 🧑‍🎨 **Henrique Cunha Torres, RM: 565119**
-- 👨‍💻 **Felipe Bezerra Beatriz, RM: 564723**
-- 👨‍🔬 **Max Hayashi Batista, RM: 563717**
+* 🧑‍🎨 **Henrique Cunha Torres – RM 565119**
+* 👨‍💻 **Felipe Bezerra Beatriz – RM 564723**
+* 👨‍🔬 **Max Hayashi Batista – RM 563717**
 
-------------------------------------------------------------------------
+---
 
-## 🌐 Repositório do Projeto no GitHub
+## 🌐 Repositório da API
 
-- 🔗 [HC-Auxilia-React](https://github.com/Driven-Soft/HC-Auxilia-React)
+🔗 [HC-Auxilia-API](https://github.com/Driven-Soft/HC-Auxilia-API)
 
-------------------------------------------------------------------------
+## 🌐 Repositório do Front-End
 
-✨ Obrigado por conhecer nosso projeto!
+🔗 [HC-Auxilia-React](https://github.com/Driven-Soft/HC-Auxilia-React)
+
+---
+
+✨ Obrigado por conhecer nossa solução!
